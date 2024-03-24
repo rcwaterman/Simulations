@@ -2,6 +2,7 @@ import pygame
 from pygame.locals import *
 import os
 os.environ['SDL_AUDIODRIVER'] = 'directx'
+import math
 
 """
 TODO:
@@ -20,6 +21,9 @@ screen = pygame.display.set_mode((1280, 720))
 clock = pygame.time.Clock()
 running = True
 dt = 0
+gravity = 1.05
+velocity = 0
+radius = 20
 
 player_pos = pygame.Vector2(screen.get_width() / 2, screen.get_height() / 2)
 
@@ -33,7 +37,7 @@ while running:
     # fill the screen with a color to wipe away anything from last frame
     screen.fill("purple")
 
-    pygame.draw.circle(screen, "red", player_pos, 40)
+    pygame.draw.circle(screen, "red", player_pos, radius)
 
     keys = pygame.key.get_pressed()
     if keys[pygame.K_w]:
@@ -45,12 +49,18 @@ while running:
     if keys[pygame.K_d]:
         player_pos.x += 300 * dt
 
+    player_pos.y+=gravity
+    gravity+=0.05
+    print(player_pos.y, screen.get_height())
+    if math.floor(player_pos.y + radius) == screen.get_height() or math.floor(player_pos.y - radius) == 0:
+        gravity = gravity*-1
+
     # flip() the display to put your work on screen
     pygame.display.flip()
 
     # limits FPS to 60
     # dt is delta time in seconds since last frame, used for framerate-
     # independent physics.
-    dt = clock.tick(60) / 1000
+    dt = clock.tick(100) / 1000
 
 pygame.quit()
