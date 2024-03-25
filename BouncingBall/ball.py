@@ -21,13 +21,17 @@ dims = pygame.display.Info()
 screen = pygame.display.set_mode((dims.current_w*0.9, dims.current_h*0.9))
 clock = pygame.time.Clock()
 running = True
+colors = list(pygame.colordict.THECOLORS.values())
 dt = 0
-color = (255, 255, 255)
 cor = 0.98
-gravity = 9.8
+gravity = 10
 v_x = 10
 v_y = 0
-radius = 20
+#Radius of the bounding circle
+r_bound = screen.get_height() / 2
+#Thickness of the bounding circle
+t_bound = 10
+radius = 10
 contact_count = 0
 
 player_pos = pygame.Vector2(screen.get_width() / 2, screen.get_height() / 2)
@@ -41,7 +45,13 @@ while running:
 
     # fill the screen with a color to wipe away anything from last frame
     screen.fill("black")
+    color = colors[contact_count]
+    #Bounding circle outside edge
+    pygame.draw.circle(screen, "white", (screen.get_width() / 2, screen.get_height() / 2), r_bound)
+    #Bounding circle inside edge
+    pygame.draw.circle(screen, "black", (screen.get_width() / 2, screen.get_height() / 2), (screen.get_height() / 2)-t_bound)
 
+    #bouncing ball
     pygame.draw.circle(screen, color, player_pos, radius)
 
     player_pos.y+=gravity
@@ -59,7 +69,7 @@ while running:
         gravity = gravity*cor
         contact_count+=1
 
-    gravity+=1
+    gravity += 10*dt
 
     # flip() the display to put your work on screen
     pygame.display.flip()
